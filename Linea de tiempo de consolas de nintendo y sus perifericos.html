@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Línea de tiempo interactiva sobre la evolución de las consolas japonesas de Nintendo.">
+<title>Evolución de consolas de Nintendo</title>
+<style>
+:root{
+ --coffee:#3b2418;--brown:#68452f;--caramel:#a8754d;--tan:#d8b995;
+ --paper:#f1e5d3;--cream:#fff8ed;--ink:#2b1b13;--line:#9b7657;
+ --shadow:0 14px 36px rgba(43,27,19,.16);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:auto;scroll-snap-type:y mandatory;scrollbar-color:var(--caramel) var(--paper)}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Times New Roman",serif}
+header{min-height:100vh;scroll-snap-align:start;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:4rem 8vw;background:
+ radial-gradient(circle at 20% 20%,rgba(255,248,237,.55),transparent 28%),
+ linear-gradient(135deg,#3b2418,#795236 58%,#b68a62);color:var(--cream);position:relative;overflow:hidden}
+header:before{content:"";position:absolute;inset:22px;border:1px solid rgba(255,248,237,.35);pointer-events:none}
+.eyebrow{font: bold .85rem "Courier New",monospace;letter-spacing:.22em;text-transform:uppercase;color:#e5c9a7}
+h1,h2,h3{font-family:"Comic Sans MS","Comic Sans",cursive}
+h1{font-size:clamp(2.5rem,7vw,5.7rem);line-height:1.04;max-width:1000px;margin:.6rem 0 1rem;text-shadow:3px 4px 0 rgba(0,0,0,.18)}
+header p{font:1.15rem "Courier New",monospace;max-width:700px;line-height:1.7;color:#f2dfc8}
+.notice{max-width:850px;margin:2rem auto 0;padding:1.1rem 1.4rem;background:#fff0d9;color:#4b2c1c;border:2px dashed #a8754d;border-radius:8px;font-weight:bold;line-height:1.55;box-shadow:var(--shadow)}
+.scroll-hint{margin-top:2.5rem;font: .85rem "Courier New",monospace;letter-spacing:.15em}
+.scroll-hint span{display:block;font-size:2rem;margin-top:.4rem}
+.timeline-section{min-height:100vh;scroll-snap-align:start;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(300px,.9fr);gap:clamp(1.5rem,5vw,5rem);align-items:center;padding:7rem clamp(1.2rem,7vw,7rem);position:relative;border-bottom:1px solid var(--tan);background:linear-gradient(115deg,var(--cream),#ead8c1)}
+.timeline-section:nth-of-type(even){background:linear-gradient(115deg,#e8d4bb,#f8efe3)}
+.timeline-section:before{content:"";position:absolute;left:clamp(18px,3vw,45px);top:0;bottom:0;width:3px;background:var(--line);opacity:.5}
+.content{max-width:780px;padding-left:1.5rem}
+.number{font: bold .9rem "Courier New",monospace;letter-spacing:.16em;color:var(--brown);text-transform:uppercase}
+h2{font-size:clamp(2.4rem,5vw,4.4rem);color:var(--coffee);margin:.45rem 0 1.2rem;line-height:1.05}
+.description{font-size:clamp(1.05rem,1.4vw,1.22rem);line-height:1.8;white-space:normal}
+.model-panel{background:#26180f;border:8px solid #6c4a32;border-radius:14px;box-shadow:var(--shadow);overflow:hidden;min-height:360px;display:flex;flex-direction:column}
+.model-panel iframe{width:100%;height:420px;border:0;background:#21160f}
+.model-caption{padding:.8rem 1rem;background:#4a3020;color:#f7e7d2;font: .8rem "Courier New",monospace;line-height:1.5}
+.placeholder{min-height:350px;display:grid;place-items:center;text-align:center;padding:2rem;color:#f5e5d1;background:radial-gradient(circle,#795236,#24160f)}
+.placeholder .cube{width:120px;height:120px;border:3px solid #d7b995;transform:rotate(45deg);margin:1rem auto;box-shadow:inset 0 0 0 12px rgba(255,255,255,.08)}
+.placeholder p{font: .9rem "Courier New",monospace;line-height:1.6;max-width:360px}
+.gallery{scroll-snap-align:start;padding:6rem clamp(1.2rem,7vw,7rem);background:#d9c0a2}
+.gallery h2{text-align:center;margin-bottom:.5rem}
+.gallery-intro{text-align:center;font:1rem "Courier New",monospace;margin:0 auto 3rem;max-width:700px;line-height:1.6}
+.gallery-group{max-width:1200px;margin:0 auto 3.5rem}
+.gallery-group h3{font-size:1.8rem;color:var(--coffee);border-bottom:2px solid var(--line);padding-bottom:.6rem}
+.photo-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}
+.photo-card{background:var(--cream);padding:.65rem;border-radius:9px;box-shadow:0 5px 16px rgba(43,27,19,.12)}
+.photo-card img{display:block;width:100%;height:190px;object-fit:contain;background:#eee0cd;border-radius:5px}
+.photo-card figcaption{font:.8rem "Courier New",monospace;padding:.65rem .2rem .2rem;line-height:1.4}
+footer{scroll-snap-align:end;text-align:center;padding:2rem 1rem;background:var(--coffee);color:#f5e5d1;font: .95rem "Courier New",monospace;line-height:1.6}
+.small-note{font-size:.82rem;color:#70513a}
+@media(max-width:850px){
+ .timeline-section{grid-template-columns:1fr;padding:5rem 1.4rem 4rem;gap:1.5rem}
+ .timeline-section:before{left:10px}
+ .content{padding-left:1rem}
+ .model-panel iframe{height:340px}
+ .photo-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:520px){.photo-grid{grid-template-columns:1fr}.photo-card img{height:220px}.notice{font-size:.92rem}}
+</style>
+</head>
+<body>
+<header>
+ <div class="eyebrow">Archivo · Historia del videojuego</div>
+ <h1>Evolución de consolas de Nintendo</h1>
+ <p>Un recorrido cronológico por cuatro consolas japonesas y algunos de sus periféricos más representativos.</p>
+ <div class="notice">Aviso: La página web está en construcción y solo cuenta las 4 principales consolas de Nintendo, Este es presentado en base de las consolas en sus versiones japonesas, a causa de ser en primero en ser lanzado y tener los periféricos que no se lanzaron mas alla de japon.</div>
+ <div class="scroll-hint">DESPLÁZATE PARA CONTINUAR <span>↓</span></div>
+</header>
+
+<section class="timeline-section" id="famicom">
+ <div class="content">
+  <div class="number">01 · 1983 · Japón</div>
+  <h2>La Famicom</h2>
+  <p class="description">La Famicom, la tan conocida primera consola de Nintendo lanzada en 1983. Su hecho de ser la primera consola de Nintendo fue interesante, ya que este mismo fue lanzado inicialmente en Japón solamente. La caracterización es que su modelo era muy diferente al que se había lanzado la versión norteamericana llamada la NES: su principal característica era que, en sí, tenía micrófono en el segundo mando de la consola, mientras que la NES estaba ausente, además de que tampoco tenía un sistema de bloqueo para evitar los juegos sin licencias frente al sistema de seguridad de 10NES que tenía la versión americana. Además, la consola contaba con algunos implementos que no salieron de Japón como la Famicom Disk System, un lector de disquetes para la consola. También contaba con títulos conocidos como la trilogía de Super Mario Bros., Metroid y la duología de The Legend of Zelda.</p>
+ </div>
+ <div class="model-panel">
+  <iframe title="Modelo 3D de Nintendo Famicom" allow="autoplay; fullscreen; xr-spatial-tracking" allowfullscreen src="https://sketchfab.com/models/f00c88ca6216499ba05269c91f29bb04/embed?autostart=0&ui_theme=dark"></iframe>
+  <div class="model-caption">Modelo 3D interactivo · Arrastra con el ratón o el dedo para rotar. Usa la rueda o pellizca para acercar.</div>
+ </div>
+</section>
+
+<section class="timeline-section" id="super-famicom">
+ <div class="content">
+  <div class="number">02 · 1990 · Japón</div>
+  <h2>La Super Famicom</h2>
+  <p class="description">La Super Famicom, la consola de la segunda generación de Nintendo, lanzada en 1990, fue una consola muy conocida por ser más potente que la Famicom. Incluía un chip especial llamado Super FX, un chip que procesaba un formato 3D experimental, muy avanzado para su época y utilizado en juegos como Star Fox. Aparte de ese juego, están otros títulos famosos como Super Mario World, Super Metroid, Final Fantasy VI y The Legend of Zelda: A Link to the Past, entre otros. Además, también fue una de las primeras consolas en contar con un servicio de conexión en línea: Satellaview, un accesorio caracterizado por permitir conectarse y descargar contenidos extra para algunos juegos a través de un cartucho especial BS-X. También tuvo otros periféricos, como Super Famicom Mouse, utilizado en algunos juegos que necesitaban un puntero o cursor.</p>
+ </div>
+ <div class="model-panel">
+  <iframe title="Modelo 3D de Super Famicom" allow="autoplay; fullscreen; xr-spatial-tracking" allowfullscreen src="https://sketchfab.com/models/610c0cd0c841486385495f53e3b68236/embed?autostart=0&ui_theme=dark"></iframe>
+  <div class="model-caption">Modelo 3D interactivo · Arrastra con el ratón o el dedo para rotar.</div>
+ </div>
+</section>
+
+<section class="timeline-section" id="nintendo-64">
+ <div class="content">
+  <div class="number">03 · 1996 · Japón</div>
+  <h2>La Nintendo 64</h2>
+  <p class="description">La Nintendo 64, la gran consola conocida por ser la primera en procesar gráficos 3D dentro del catálogo de Nintendo de ese momento. Se caracterizaba porque los cartuchos tenían un límite de almacenamiento de hasta 64 MB, haciendo que los juegos 3D necesitaran técnicas de ingeniería para caber y aprovechar esa limitación. Un ejemplo claro es Resident Evil 2, que pudo adaptarse rehaciendo partes de su motor: el juego original ocupaba alrededor de 1,5 GB en PlayStation. También se recurrió a técnicas de síntesis para reproducir sonido en tiempo real, evitando almacenar grandes archivos de audio. Además, tuvo periféricos como el complemento para discos especiales llamado 64DD, que ampliaba las posibilidades de almacenamiento y permitía añadir juegos o contenido extra, como SimCity 64. Sin embargo, ese periférico fracasó comercialmente y quedó limitado a Japón.</p>
+ </div>
+ <div class="model-panel">
+  <div class="placeholder"><div><div class="cube"></div><h3>Modelo 3D pendiente</h3><p>Falta el enlace de Sketchfab para la Nintendo 64. Cuando lo tengas, se puede insertar aquí con rotación interactiva.</p></div></div>
+  <div class="model-caption">Espacio reservado para el modelo 3D interactivo.</div>
+ </div>
+</section>
+
+<section class="timeline-section" id="gamecube">
+ <div class="content">
+  <div class="number">04 · 2001 · Japón</div>
+  <h2>GameCube</h2>
+  <p class="description">La GameCube, la conocida consola cúbica de Nintendo, tenía la particularidad de utilizar discos pequeños y de alta densidad, muy diferentes de los discos CD o Blu-ray de la época. Se caracterizaba porque, aparte de ser una consola con forma de cubo, tenía algunos periféricos como los accesorios para jugar títulos de Game Boy y Game Boy Advance en el televisor mediante Game Boy Player. Además, la consola tenía un accesorio que permitía conectarse a internet, como el adaptador de banda ancha o el módem, e incluso existía un teclado para el mando que permitía escribir en línea, aunque no fue muy popular.</p>
+ </div>
+ <div class="model-panel">
+  <div class="placeholder"><div><div class="cube"></div><h3>Modelo 3D pendiente</h3><p>Falta el enlace de Sketchfab para la Nintendo GameCube. Cuando lo tengas, se puede insertar aquí con rotación interactiva.</p></div></div>
+  <div class="model-caption">Espacio reservado para el modelo 3D interactivo.</div>
+ </div>
+</section>
+
+<section class="gallery" id="galeria">
+ <h2>Galería de consolas y periféricos</h2>
+ <p class="gallery-intro">Referencias visuales para acompañar la línea de tiempo. Las imágenes se cargan desde Wikimedia Commons; se necesita conexión a internet para verlas.</p>
+
+ <div class="gallery-group"><h3>Famicom</h3><div class="photo-grid">
+  <figure class="photo-card"><img loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/Nintendo-Famicom-Console-Set-FL.jpg" alt="Consola Nintendo Famicom"><figcaption>Nintendo Family Computer (Famicom)</figcaption></figure>
+  <figure class="photo-card"><img loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/Nintendo-Famicom-Controller.jpg" alt="Mandos de Famicom"><figcaption>Mandos con micrófono en el segundo control</figcaption></figure>
+  <figure class="photo-card"><img loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/Famicom_Disk_System.jpg" alt="Famicom Disk System"><figcaption>Famicom Disk System</figcaption></figure>
+ </div></div>
+
+ <div class="gallery-group"><h3>Super Famicom y periféricos</h3><div class="photo-grid">
+  <figure class="photo-card"><img loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/Super_Famicom.jpg" alt="Super Famicom"><figcaption>Super Famicom japonesa</figcaption></figure>
+  <figure class="photo-card"><img loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/Super_Famicom_Mouse.jpg" alt="Super Famicom Mouse"><figcaption>Super Famicom Mouse</figcaption></figure>
+  <figure class="photo-card"><img loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/Satellaview.jpg" alt="Satellaview"><figcaption>Satellaview</figcaption></figure>
+ </div></div>
+
+ <div class="gallery-group"><h3>Nintendo 64 y periféricos</h3><div class="photo-grid">
+  <figure class="photo-card"><img loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/Nintendo_64.jpg" alt="Consola Nintendo 64"><figcaption>Nintendo 64</figcaption></figure>
+  <figure class="photo-card"><img loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/Nintendo_64DD.jpg" alt="Nintendo 64DD"><figcaption>Unidad de discos 64DD</figcaption></figure>
+  <figure class="photo-card"><img loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/Nintendo_64DD_Disk.jpg" alt="Disco de Nintendo 64DD"><figcaption>Disco para 64DD</figcaption></figure>
+ </div></div>
+
+ <div class="gallery-group"><h3>GameCube y periféricos</h3><div class="photo-grid">
+  <figure class="photo-card"><img loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/Nintendo-GameCube-Set.jpg" alt="Consola Nintendo GameCube"><figcaption>Nintendo GameCube</figcaption></figure>
+  <figure class="photo-card"><img loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/Game_Boy_Player.jpg" alt="Game Boy Player"><figcaption>Game Boy Player</figcaption></figure>
+  <figure class="photo-card"><img loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/GameCube_Broadband_Adapter.jpg" alt="Adaptador de banda ancha GameCube"><figcaption>Adaptador de banda ancha</figcaption></figure>
+ </div></div>
+ <p class="small-note">Nota: las fotografías pueden tener licencias y atribuciones individuales en Wikimedia Commons. Consulta la página de cada archivo antes de reutilizarlas públicamente.</p>
+</section>
+
+<footer>Pagina web creada por Leonardo S, La creación del mismo fue usado con chatgpt.</footer>
+</body>
+</html>
